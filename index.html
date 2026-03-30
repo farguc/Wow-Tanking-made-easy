@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tank Academy — Midnight Dungeons</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0c0f;
+  --surface:  #111418;
+  --card:     #161b22;
+  --border:   #2a3040;
+  --border2:  #1e2530;
+  --accent:   #e8a020;
+  --accent2:  #f0c050;
+  --red:      #c0302a;
+  --red2:     #e05040;
+  --blue:     #2a7abd;
+  --blue2:    #4a9adf;
+  --green:    #2a8a4a;
+  --green2:   #50b870;
+  --orange:   #c05820;
+  --orange2:  #e07840;
+  --purple:   #7a30c0;
+  --purple2:  #a060e0;
+  --text:     #c8d0dc;
+  --muted:    #5a6880;
+  --white:    #edf2f8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.logo-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.sidebar-section {
+  padding: 14px 16px 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.nav-item.active { background: rgba(232,160,32,0.1); color: var(--accent); border-left-color: var(--accent); }
+
+.nav-item .nav-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 100px;
+  background: rgba(42,122,189,0.25);
+  color: var(--blue2);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.nav-badge.m-plus { background: rgba(122,48,192,0.25); color: var(--purple2); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: linear-gradient(135deg, #111820 0%, #0d1218 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 40px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,160,32,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.page-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+.header-pills {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.pill-gold  { color: var(--accent2); border-color: rgba(232,160,32,0.3); background: rgba(232,160,32,0.08); }
+.pill-blue  { color: var(--blue2);   border-color: rgba(42,122,189,0.3); background: rgba(42,122,189,0.08); }
+.pill-red   { color: var(--red2);    border-color: rgba(192,48,42,0.3);  background: rgba(192,48,42,0.08); }
+
+/* ── CONTENT AREA ── */
+.content { padding: 32px 40px; }
+
+/* ── DUNGEON CARD ── */
+.dungeon-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.dungeon-card:hover { border-color: var(--border2); }
+.dungeon-card.open { border-color: rgba(232,160,32,0.3); }
+
+.dungeon-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.dungeon-header:hover { background: rgba(255,255,255,0.02); }
+
+.dungeon-emoji { font-size: 28px; flex-shrink: 0; }
+
+.dungeon-info { flex: 1; min-width: 0; }
+
+.dungeon-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.dungeon-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.d-zone {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.d-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.tag-rotation { background: rgba(122,48,192,0.3); color: var(--purple2); border: 1px solid rgba(122,48,192,0.4); }
+.tag-leveling { background: rgba(42,138,74,0.3); color: var(--green2); border: 1px solid rgba(42,138,74,0.4); }
+.tag-hard { background: rgba(192,48,42,0.3); color: var(--red2); border: 1px solid rgba(192,48,42,0.4); }
+.tag-moderate { background: rgba(192,88,32,0.3); color: var(--orange2); border: 1px solid rgba(192,88,32,0.4); }
+.tag-easy { background: rgba(42,122,189,0.25); color: var(--blue2); border: 1px solid rgba(42,122,189,0.3); }
+
+.dungeon-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+.boss-count {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.chevron {
+  color: var(--muted);
+  font-size: 14px;
+  transition: transform 0.3s;
+}
+
+.dungeon-card.open .chevron { transform: rotate(180deg); color: var(--accent); }
+
+/* ── DUNGEON BODY ── */
+.dungeon-body { display: none; }
+.dungeon-card.open .dungeon-body { display: block; }
+
+.dungeon-body-inner {
+  border-top: 1px solid var(--border2);
+}
+
+/* ── TANK OVERVIEW ── */
+.tank-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border2);
+}
+
+.overview-block {
+  padding: 16px 22px;
+  border-right: 1px solid var(--border2);
+}
+
+.overview-block:last-child { border-right: none; }
+
+.ob-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ob-content {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.ob-content strong { color: var(--accent2); font-weight: 600; }
+
+/* ── BOSSES ── */
+.bosses-section { padding: 0 22px 22px; }
+
+.bosses-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 0 12px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 14px;
+}
+
+.boss-entry {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.boss-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border2);
+}
+
+.boss-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--accent);
+  line-height: 1;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.boss-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  flex: 1;
+}
+
+.mechanic-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.m-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.m-interrupt { background: rgba(192,48,42,0.3); color: #ff7060; border: 1px solid rgba(192,48,42,0.4); }
+.m-defensive { background: rgba(232,160,32,0.2); color: var(--accent2); border: 1px solid rgba(232,160,32,0.3); }
+.m-position  { background: rgba(42,122,189,0.25); color: var(--blue2); border: 1px solid rgba(42,122,189,0.3); }
+.m-taunt     { background: rgba(122,48,192,0.25); color: var(--purple2); border: 1px solid rgba(122,48,192,0.3); }
+.m-cc        { background: rgba(42,138,74,0.25); color: var(--green2); border: 1px solid rgba(42,138,74,0.3); }
+.m-dispel    { background: rgba(60,120,180,0.25); color: #80c0ff; border: 1px solid rgba(60,120,180,0.3); }
+
+.boss-tips {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tip-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.tip-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+.tip-icon.warn  { background: rgba(192,48,42,0.3); color: var(--red2); }
+.tip-icon.note  { background: rgba(42,122,189,0.2); color: var(--blue2); }
+.tip-icon.tank  { background: rgba(232,160,32,0.2); color: var(--accent); }
+.tip-icon.skill { background: rgba(122,48,192,0.2); color: var(--purple2); }
+.tip-icon.good  { background: rgba(42,138,74,0.2); color: var(--green2); }
+
+.tip-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.tip-text strong { color: var(--white); font-weight: 600; }
+.tip-text em { color: var(--accent2); font-style: normal; font-weight: 500; }
+
+/* ── PULL ADVICE ── */
+.pull-section {
+  background: rgba(232,160,32,0.04);
+  border-top: 1px solid rgba(232,160,32,0.15);
+  padding: 14px 22px;
+}
+
+.pull-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.pull-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.pull-text strong { color: var(--accent2); }
+
+/* ── FUNDAMENTALS PAGE ── */
+.fundamentals { padding: 32px 40px; }
+
+.fund-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.fund-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+
+.fund-icon { font-size: 26px; margin-bottom: 10px; }
+
+.fund-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.fund-body {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.fund-body strong { color: var(--accent2); font-weight: 600; }
+
+.fund-list {
+  list-style: none;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fund-list li {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.fund-list li::before {
+  content: '▸';
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── INTERRUPT TABLE ── */
+.interrupt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.interrupt-table th {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+}
+
+.interrupt-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border2);
+  vertical-align: top;
+  color: var(--text);
+}
+
+.interrupt-table tr:last-child td { border-bottom: none; }
+.interrupt-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.priority-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.p-must    { background: rgba(192,48,42,0.35); color: #ff7060; }
+.p-high    { background: rgba(192,88,32,0.35); color: var(--orange2); }
+.p-medium  { background: rgba(42,122,189,0.3); color: var(--blue2); }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 40px;
+  gap: 4px;
+}
+
+.tab {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── SEARCH ── */
+.search-wrap {
+  padding: 20px 40px 0;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .tank-overview { grid-template-columns: 1fr; }
+  .fund-grid { grid-template-columns: 1fr; }
+  .page-header { padding: 24px 20px 20px; }
+  .content { padding: 20px; }
+  .fundamentals { padding: 20px; }
+  .tabs { padding: 0 16px; }
+  .search-wrap { padding: 16px 20px 0; }
+}
+
+/* ── ANIM ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.content, .fundamentals { animation: fadeIn 0.3s ease; }
+
+/* ── MOBILE NAV ── */
+.mobile-nav {
+  display: none;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mobile-nav::-webkit-scrollbar { display: none; }
+
+.mobile-nav-item {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.mobile-nav-item.active { background: rgba(232,160,32,0.12); color: var(--accent); border-color: rgba(232,160,32,0.3); }
+
+@media (max-width: 900px) { .mobile-nav { display: flex; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-title">Tank Academy</div>
+    <div class="logo-sub">Midnight · Season 1</div>
+  </div>
+
+  <div class="sidebar-section">Navigation</div>
+  <div class="nav-item active" onclick="showPage('dungeons')" id="nav-dungeons">
+    <span class="nav-icon">⚔️</span> Dungeon Guide
+  </div>
+  <div class="nav-item" onclick="showPage('fundamentals')" id="nav-fundamentals">
+    <span class="nav-icon">📖</span> Tank Fundamentals
+  </div>
+  <div class="nav-item" onclick="showPage('interrupts')" id="nav-interrupts">
+    <span class="nav-icon">🛑</span> Interrupt Priority
+  </div>
+
+  <div class="sidebar-section">M+ Rotation</div>
+  <div class="nav-item" onclick="filterDungeon('Windrunner Spire')">
+    <span class="nav-icon">🏰</span> Windrunner Spire <span class="nav-badge m-plus">M+</span>
+  </div>
+  <div class="nav-item" onclick="filterDungeon('Maisara Caverns')">
+    <span class="nav-icon">💀</span> Maisara Caverns <span class="nav-badge m-plus">M+</span>
+  </div>
+  <div class="nav-item" onclick="filterDungeon('Nexus-Point Xenas')">
+    <span class="nav-icon">🌀</span> Nexus-Point Xenas <span class="nav-badge m-plus">M+</span>
+  </div>
+  <div class="nav-item" onclick="filterDungeon('Magisters\' Terrace')">
+    <span class="nav-icon">🏛️</span> Magisters' Terrace <span class="nav-badge m-plus">M+</span>
+  </div>
+
+  <div class="sidebar-section">All Dungeons</div>
+  <div class="nav-item" onclick="filterDungeon('all')">
+    <span class="nav-icon">📋</span> Show All
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-item active" onclick="showPage('dungeons')">Dungeons</div>
+    <div class="mobile-nav-item" onclick="showPage('fundamentals')">Fundamentals</div>
+    <div class="mobile-nav-item" onclick="showPage('interrupts')">Interrupts</div>
+  </div>
+
+  <!-- DUNGEONS PAGE -->
+  <div id="page-dungeons">
+    <div class="page-header">
+      <div class="page-tag">Midnight Season 1 · Tank Guide</div>
+      <div class="page-title">Dungeon Reference</div>
+      <div class="page-desc">Boss mechanics, pull advice, interrupt priorities, and tank-specific tips for every Midnight dungeon. Click any dungeon to expand.</div>
+      <div class="header-pills">
+        <span class="pill pill-red">🛑 Interrupt = Must-kick cast</span>
+        <span class="pill pill-gold">🛡 Defensive = Use a cooldown</span>
+        <span class="pill pill-blue">💡 Position = Watch your feet</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="setFilter('all',this)">All Dungeons</div>
+      <div class="tab" onclick="setFilter('rotation',this)">M+ Rotation</div>
+      <div class="tab" onclick="setFilter('leveling',this)">Leveling</div>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" type="text" placeholder="Search dungeons or bosses…" oninput="searchDungeons(this.value)" id="search-box">
+    </div>
+
+    <div class="content" id="dungeon-list"></div>
+  </div>
+
+  <!-- FUNDAMENTALS PAGE -->
+  <div id="page-fundamentals" style="display:none">
+    <div class="page-header">
+      <div class="page-tag">New Tank · Start Here</div>
+      <div class="page-title">Tank Fundamentals</div>
+      <div class="page-desc">The core concepts you need to tank confidently — from managing threat to reading boss mechanics and leading pulls.</div>
+    </div>
+    <div class="fundamentals">
+      <div class="fund-grid">
+        <div class="fund-card">
+          <div class="fund-icon">🎯</div>
+          <div class="fund-title">Threat & Aggro</div>
+          <div class="fund-body">
+            Your first job is keeping mobs on you. <strong>Use your highest-threat ability immediately on pull</strong> — most specs have an AoE taunt or threat dump.
+            <ul class="fund-list">
+              <li>Tab-target and apply your threat-builder on all mobs in large pulls</li>
+              <li>If a DPS pulls aggro, <strong>taunt immediately</strong> — don't wait</li>
+              <li>Use your AoE kit to maintain threat on spread packs</li>
+              <li>Casters need ranged abilities to reach them — or LoS them to you</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-icon">🛡️</div>
+          <div class="fund-title">Defensive Cooldowns</div>
+          <div class="fund-body">
+            <strong>Don't hoard your defensives.</strong> A cooldown used slightly early is worth far more than one held too long.
+            <ul class="fund-list">
+              <li>Learn which boss abilities hit hardest — use a major CD there</li>
+              <li>Minor defensives (passives, short CDs) fill the gaps between majors</li>
+              <li>Communicate with your healer: "I'm using X now" helps them plan</li>
+              <li>On Tyrannical weeks: save a major CD for the final boss enrage phase</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-icon">🗺️</div>
+          <div class="fund-title">Leading Pulls (M+)</div>
+          <div class="fund-body">
+            As tank, <strong>you control the pace of the run</strong>. Pull too little and you waste time. Pull too much and you wipe.
+            <ul class="fund-list">
+              <li>Learn the dungeon's % route before leading a group</li>
+              <li>Use Keystone.guru to study routes offline</li>
+              <li>Communicate skips — not everyone knows what you're doing</li>
+              <li>Pull into your healer's CDs, not away from them</li>
+              <li>Position large packs near walls so ranged DPS can cleave without moving</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-icon">🛑</div>
+          <div class="fund-title">Interrupts & CC</div>
+          <div class="fund-body">
+            Tanking isn't just surviving hits — it's <strong>managing caster mobs</strong>. Bad interrupts cause wipes more than bad positioning.
+            <ul class="fund-list">
+              <li>Open the dungeon journal and check which mobs have must-kick casts</li>
+              <li>Call out interrupt assignments in voice or chat before the pull</li>
+              <li>Tanks should cover kicks when DPS are busy or have no kick</li>
+              <li>CC (stun, fear, knockback) can pause dangerous casts if your kick is on CD</li>
+              <li>Stagger CC: don't chain-CC unless you need breathing room</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-icon">📍</div>
+          <div class="fund-title">Positioning</div>
+          <div class="fund-body">
+            Where you stand is half the battle. <strong>Bad positioning costs your DPS uptime and your healer mana.</strong>
+            <ul class="fund-list">
+              <li>Face bosses away from the group to avoid cleaves hitting DPS</li>
+              <li>Stack mobs tightly for AoE — hug them with your back to a wall</li>
+              <li>Don't kite into melee-friendly zones (corners, pillars are fine)</li>
+              <li>Leave room between you and hazards — give yourself an escape path</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-icon">🔄</div>
+          <div class="fund-title">Taunt Swapping</div>
+          <div class="fund-body">
+            Some bosses apply stacking tank debuffs. <strong>If you see a stacking debuff on yourself, taunt-swap with your co-tank</strong> before it gets too high.
+            <ul class="fund-list">
+              <li>Common swap triggers: 3–5 stacks of a damage-taken debuff</li>
+              <li>Coordinate via voice or WeakAuras; addons like BigDebuffs help</li>
+              <li>In 5-man content, solo tanking is the norm — fewer swap situations</li>
+              <li>Always watch for "Tank" mechanics in the Dungeon Journal</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="fund-card" style="margin-bottom:16px">
+        <div class="fund-icon">🏆</div>
+        <div class="fund-title">Best Tank Specs — Midnight Season 1</div>
+        <div class="fund-body">
+          <ul class="fund-list">
+            <li><strong>Protection Paladin</strong> — S-tier all-rounder. Best mitigation, off-healing, and Blessings for your group. Excellent vs magic damage and debuffs.</li>
+            <li><strong>Brewmaster Monk</strong> — S-tier for smoothing damage spikes via Stagger. Predictable damage intake, great utility. Requires precise CD management.</li>
+            <li><strong>Vengeance Demon Hunter</strong> — S-tier solo and in M+. Exceptional mobility, Sigil CC toolkit, snap threat. Best self-sustain of any tank.</li>
+            <li><strong>Protection Warrior</strong> — Best choice for learning tank fundamentals. Classic, straightforward, very readable defensive kit.</li>
+            <li><strong>Blood Death Knight</strong> — Strong self-healing, excellent for progression. Less mobile but incredibly durable.</li>
+            <li><strong>Guardian Druid</strong> — Consistent passive mitigation. Good for groups that value stability over flashy utility.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fund-card">
+        <div class="fund-icon">⚙️</div>
+        <div class="fund-title">Recommended Addons for New Tanks</div>
+        <div class="fund-body">
+          <ul class="fund-list">
+            <li><strong>Details!</strong> — Damage/interrupt/death tracking. Learn from your runs.</li>
+            <li><strong>BigDebuffs</strong> — Shows important debuffs on your frame. Never miss a stacking tank debuff.</li>
+            <li><strong>Plater Nameplates</strong> — Colour-codes enemies by interrupt status. Essential for managing large pulls.</li>
+            <li><strong>WeakAuras</strong> — Build or import auras for your spec's cooldown tracking.</li>
+            <li><strong>Larias's Checklist</strong> — In-game weekly tracker so you stay raid-ready.</li>
+            <li><strong>Keystone.guru</strong> (website) — Plan your M+ route before zoning in.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERRUPTS PAGE -->
+  <div id="page-interrupts" style="display:none">
+    <div class="page-header">
+      <div class="page-tag">M+ Priority Reference</div>
+      <div class="page-title">Interrupt Priority</div>
+      <div class="page-desc">A fast-reference list of the highest-priority kicks across all Midnight M+ dungeons. Bookmark this before your first key.</div>
+    </div>
+    <div class="fundamentals">
+      <div class="fund-card" style="margin-bottom:20px">
+        <div class="fund-body">
+          <strong>MUST</strong> = Let this cast go and someone will probably die. These are your first responsibility.<br>
+          <strong>HIGH</strong> = Dangerous, kick ASAP but survivable if missed once.<br>
+          <strong>MEDIUM</strong> = Worth kicking to reduce healer stress.
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+        <table class="interrupt-table" id="interrupt-table">
+          <thead>
+            <tr>
+              <th>Dungeon</th>
+              <th>Enemy / Boss</th>
+              <th>Cast to Interrupt</th>
+              <th>Priority</th>
+              <th>Why It Matters</th>
+            </tr>
+          </thead>
+          <tbody id="interrupt-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .main -->
+</div><!-- end .app -->
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+const DUNGEONS = [
+  {
+    id: 'windrunner-spire',
+    name: 'Windrunner Spire',
+    emoji: '🏰',
+    zone: 'Eversong Woods',
+    type: 'rotation',
+    difficulty: 'easy',
+    diffLabel: 'Learner-Friendly',
+    bosses: 4,
+    unlockLevel: 81,
+    coords: '35.2, 78.4',
+    tankOverview: {
+      pull: 'Start in the <strong>North wing (Emberdawn)</strong> — community consensus route. The dungeon uses Soul Conduits to teleport between wings after each boss. Timer is generous; do not rush at the cost of wipes.',
+      focus: 'Managing trash interrupts is your biggest challenge here. Bosses are readable and forgiving compared to other Season 1 dungeons. Ideal for learning M+ tanking.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Restless Stewards</strong> — Interrupt <em>Spirit Bolt</em> constantly. Use stops to cancel <em>Soul Torment</em> debuffs on party members.' },
+      { icon: 'tank', text: '<strong>Spellguard Magus</strong> — At 50% HP they drop a <em>Spellguard Protection</em> bubble (99% damage reduction). Move all enemies out of it immediately.' },
+      { icon: 'note', text: '<strong>Territorial Dragonhawk</strong> — CC or interrupt <em>Fire Spit</em> channels. Use knockbacks if available.' },
+      { icon: 'note', text: '<strong>Bloated Lasher</strong> — Interrupt <em>Fungal Bolt</em>. <em>Spore Dispersal</em> hits the whole group — use a personal defensive and warn the healer.' },
+      { icon: 'warn', text: '<strong>Apex Lynx</strong> — CC immune. <em>Puncturing Bite</em> bleed is nasty — pop a defensive if the bleed stacks.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Emberdawn',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'tank', text: '<strong>Flaming Updraft</strong> debuff — use a defensive when you receive it, then place it in a corner away from the group.' },
+          { icon: 'note', text: 'Face Emberdawn <strong>away from the group</strong> at all times. Her breath cleaves forward.' },
+          { icon: 'good', text: 'Nest eggs spawn small adds — switch to them quickly to prevent them empowering the boss.' },
+        ]
+      },
+      {
+        num: '02', name: 'Derelict Duo (Kalis & Latch)',
+        tags: ['m-interrupt', 'm-position', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Interrupt Kalis\'s Banshee Wail</strong> — a wide fear that will scatter your group and cost several seconds of uptime.' },
+          { icon: 'tank', text: '<strong>Latch\'s Rend</strong> applies a stacking bleed. At 4–5 stacks, call for a taunt swap if you have an off-tank, or use a defensive and rotate cooldowns.' },
+          { icon: 'note', text: 'Keep both bosses stacked together so your DPS can cleave. Separate them only if an unavoidable mechanic demands it.' },
+        ]
+      },
+      {
+        num: '03', name: 'Commander Kroluk',
+        tags: ['m-interrupt', 'm-taunt', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Rallying Bellow</strong> at 66% and 33% — summons 4 Haunting Grunts, 1 Spectral Axethrower, 1 Phantasmal Mystic. <em>Kill the Phantasmal Mystic first</em> — its Chain Lightning must be interrupted.' },
+          { icon: 'tank', text: 'Kroluk uses <strong>Shield Wall</strong> during Rallying Bellow — he takes 99% reduced damage until all adds are dead. Don\'t waste cooldowns on him during this.' },
+          { icon: 'note', text: '<strong>Bladestorm</strong> fixates a player and damages nearby allies. Stay mobile and use defensives if it lands on you.' },
+        ]
+      },
+      {
+        num: '04', name: 'The Restless Heart',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Squall Leap stacks</strong> — the boss applies a DoT that does NOT fall off on its own. You gain stacks each time the boss repositions. This will kill tanks who ignore it.' },
+          { icon: 'tank', text: 'Remove Squall Leap stacks by <strong>stepping onto Turbulent Arrow circles</strong> on the ground after the boss\'s Arrow Rain channel. Manage this proactively.' },
+          { icon: 'tank', text: 'Save a major defensive for <strong>Tyrannical weeks</strong> — the final phase becomes very spiky if stacks aren\'t managed.' },
+          { icon: 'note', text: 'On Tyrannical: communicate with your healer about when stacks are high so they can preemptively heal you.' },
+        ]
+      },
+    ],
+    pullAdvice: 'Start with the Restless Steward packs in the entrance — keep interrupts rolling on Spirit Bolt. North wing (Emberdawn): pull Dragonhawks separately from Lashers if DPS is struggling. South wing: Ardent Cutthroats cast Poison Blades — never let these through. Final wing pulls are thin but the Restless Heart room has adds before boss. <strong>Ideal first M+ dungeon for new tanks.</strong>',
+  },
+
+  {
+    id: 'maisara-caverns',
+    name: 'Maisara Caverns',
+    emoji: '💀',
+    zone: 'Zul\'Aman',
+    type: 'rotation',
+    difficulty: 'hard',
+    diffLabel: 'Hardest in Pool',
+    bosses: 3,
+    unlockLevel: 85,
+    coords: '43.0, 39.5',
+    tankOverview: {
+      pull: 'Considered the <strong>most mechanically demanding dungeon in Season 1</strong>. Extremely high frequency of must-interrupt casts and complex multi-target encounters. Do not bring this as your first M+ key.',
+      focus: 'Interrupt management and multi-target control are everything here. Every trash pack has at least one dangerous cast. Plan kick assignments before each major pull.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Vilebranch Casters</strong> — multiple interrupt targets per pack. Assign kicks before pulling. Letting any cast through will significantly spike damage.' },
+      { icon: 'tank', text: '<strong>Soulbound Spirits</strong> — these are CC\'able. Sheep, root, or imprison one to reduce incoming casts while focusing the other.' },
+      { icon: 'note', text: '<strong>Maisara Creepers</strong> — apply a DoT on tank. Don\'t let multiple stack; rotate minor defensives or ask for an off-heal when the DoT overlaps.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Muro\'jin & Nekraxx',
+        tags: ['m-taunt', 'm-cc', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Two simultaneous targets</strong> — you must keep both on you. Use AoE threat-builders immediately on pull.' },
+          { icon: 'tank', text: '<strong>Muro\'jin\'s Snare Net</strong> — he immobilises you and then Nekraxx swoops in. Use a movement ability or personal immune to break it.' },
+          { icon: 'note', text: 'Keep them stacked so your DPS can cleave both. If Muro\'jin runs to capture a party member, taunt him back immediately.' },
+          { icon: 'skill', text: 'If you have a stun or CC, use it on <strong>Nekraxx\'s dive</strong> — it interrupts the heavy damage spike.' },
+        ]
+      },
+      {
+        num: '02', name: 'Vordaza',
+        tags: ['m-position', 'm-defensive', 'm-interrupt'],
+        tips: [
+          { icon: 'warn', text: '<strong>Necrotic Bolt</strong> — Vordaza casts this while out of melee. Interrupt or the whole party takes a large hit and Vordaza is buffed.' },
+          { icon: 'tank', text: '<strong>Soul Harvest</strong> applies a stacking damage-taken debuff on the tank. At 4 stacks pop a major defensive. The debuff falls off when she transitions phases.' },
+          { icon: 'note', text: 'Positioning: keep Vordaza against a wall. She creates overlapping necrotic puddles — make sure you leave a clear corridor to move through.' },
+          { icon: 'note', text: 'Summoned souls must die — switch to them or use a stop effect, otherwise they empower Vordaza.' },
+        ]
+      },
+      {
+        num: '03', name: 'Rak\'tul',
+        tags: ['m-defensive', 'm-position', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Dire Slam</strong> — massive frontal cleave. Never have DPS stand in front of Rak\'tul. Face him away from the group at all times.' },
+          { icon: 'tank', text: '<strong>Berserk Charge</strong> — Rak\'tul charges a random player. Run between him and the target to intercept it, or use an immune. This is your signature tank play in this dungeon.' },
+          { icon: 'tank', text: '<em>Save a major defensive for the Berserk phase</em> (sub-30% health). Damage output increases significantly and Dire Slam hits harder.' },
+          { icon: 'skill', text: 'AoE stops are valuable — adds spawn periodically throughout the fight. Stun them immediately to prevent them healing Rak\'tul.' },
+        ]
+      },
+    ],
+    pullAdvice: 'This dungeon punishes tanks who rush. <strong>Pull only one pack at a time</strong> in early keys until you know the interrupt patterns. Pre-assign kicks: "You have the left caster, I have the right." Vilebranch packs have multiple simultaneous casts — use AoE silences (Sigil of Silence for VDH, Shockwave for Warrior) on large pulls. The corridor before Rak\'tul has a trap — stop before the trip-wire or pull the entire room.',
+  },
+
+  {
+    id: 'nexus-point-xenas',
+    name: 'Nexus-Point Xenas',
+    emoji: '🌀',
+    zone: 'Voidstorm',
+    type: 'rotation',
+    difficulty: 'moderate',
+    diffLabel: 'Moderate',
+    bosses: 4,
+    unlockLevel: 90,
+    coords: 'Eastern Voidstorm',
+    tankOverview: {
+      pull: 'A max-level dungeon set in the chaotic Voidstorm. Expect <strong>vertical navigation</strong> and Void-themed mechanics. Good mobility specs shine here.',
+      focus: 'Burn-phase alignment is especially rewarding here — coordinate lust and cooldowns around boss transitions. Aerial sections require careful positioning.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Void Tendrils</strong> — these rooted casters channel AoE damage. Interrupt or they ramp up to dangerous levels within seconds.' },
+      { icon: 'tank', text: '<strong>Nexus Sentinels</strong> — use a taunt immediately if they switch targets. They gain a movement-speed buff if they reach their new target.' },
+      { icon: 'note', text: 'Watch for <strong>falling terrain hazards</strong> in the aerial sections — position yourself and the pack to avoid players getting knocked off the platform.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Alnseer the Architect',
+        tags: ['m-position', 'm-defensive'],
+        tips: [
+          { icon: 'tank', text: '<strong>Void Construction</strong> — Alnseer places growing void zones on the floor. As tank, drag him to the edge of the platform and keep the centre clear for your group.' },
+          { icon: 'note', text: 'He periodically <strong>stuns all players</strong> briefly. Use this downtime to pre-position for the next phase.' },
+          { icon: 'warn', text: '<em>Recently nerfed</em> (March 26 hotfix) — check patch notes for current tuning on this encounter.' },
+        ]
+      },
+      {
+        num: '02', name: 'Lattice Weaver',
+        tags: ['m-interrupt', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Void Lattice</strong> — an interruptible channel that creates impassable barriers. Kick it or the group gets split.' },
+          { icon: 'note', text: 'Position the boss so the barriers form behind the group, not across your escape route.' },
+          { icon: 'tank', text: 'Use a defensive when <strong>Resonance Surge</strong> fires — it detonates the Void Lattice barriers and deals high burst damage.' },
+        ]
+      },
+      {
+        num: '03', name: 'Voidborn Chassis',
+        tags: ['m-defensive', 'm-cc', 'm-taunt'],
+        tips: [
+          { icon: 'tank', text: '<strong>Chassis Overload</strong> — a stacking tank debuff. Rotate defensives or call for a taunt swap when you reach 5 stacks.' },
+          { icon: 'note', text: 'Small Void Sparks spawn from the boss. Stun or slow them to group them up for your DPS to cleave.' },
+          { icon: 'skill', text: 'The boss\'s <strong>laser sweep</strong> is telegraphed. Step sideways, don\'t kite backward — you need to stay in melee range or lose aggro.' },
+        ]
+      },
+      {
+        num: '04', name: 'Xenas the Unmade',
+        tags: ['m-defensive', 'm-position', 'm-interrupt'],
+        tips: [
+          { icon: 'warn', text: '<strong>Unmake</strong> — a targetted debuff that deals escalating damage. Pop a major defensive when targeted.' },
+          { icon: 'tank', text: 'Xenas periodically teleports to a random player. <strong>Taunt immediately</strong> and reposition him — do not let DPS get smacked by his auto-attacks.' },
+          { icon: 'note', text: '<em>Burn-phase tip</em>: Hold Lust and personal cooldowns for the phase when Xenas begins casting Void Collapse — the damage window is punishing but short.' },
+          { icon: 'tank', text: 'Kite Xenas away from <strong>Void Rifts</strong> — standing in them amplifies all damage taken. Keep the fight on clean platform.' },
+        ]
+      },
+    ],
+    pullAdvice: '<strong>Use your mobility</strong> aggressively to group scattered mobs. On vertical sections, use pulls that account for platform edges — knocked-off mobs reset and waste time. Before Xenas, ensure your group has a clear understanding of Void Rift positions. Save group defensives (Rallying Cry, Darkness) for Xenas\'s Void Collapse phase.',
+  },
+
+  {
+    id: 'magisters-terrace',
+    name: "Magisters' Terrace",
+    emoji: '🏛️',
+    zone: 'Quel\'Danas / Eversong',
+    type: 'rotation',
+    difficulty: 'moderate',
+    diffLabel: 'Moderate',
+    bosses: 4,
+    unlockLevel: 90,
+    coords: 'Silvermoon — via M+ Portal Hub',
+    tankOverview: {
+      pull: 'A returning fan-favourite dungeon, revamped for Season 1. Features <strong>high magic damage</strong> throughput — magic-mitigation tanks (Protection Paladin) shine here.',
+      focus: 'Interrupt-heavy with many caster mobs. Face bosses away from the group to avoid frontal Arcane cone abilities. Strong Arcane/Fel theme.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Sunblade Mages</strong> — Arcane Volley must be interrupted. It chains between players and quickly kills a healer who catches several bounces.' },
+      { icon: 'tank', text: '<strong>Fel Guards</strong> — these cleave in a wide arc. Face them toward a wall, away from the group. Their Fel Cleave hits anyone in the frontal 180°.' },
+      { icon: 'note', text: '<strong>Sunblade Marksmen</strong> — they fixate a random player. Use a taunt or CC to reset the fixate; otherwise they sprint out of position.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Selin Fireheart',
+        tags: ['m-interrupt', 'm-defensive'],
+        tips: [
+          { icon: 'warn', text: '<strong>Fel Crystal</strong> drain phase — Selin runs to a crystal and channels. Interrupt the channel or he gains a massive power buff.' },
+          { icon: 'tank', text: '<strong>Fel Explosion</strong> hits everyone. Coordinate with your healer; pop a minor defensive and ensure the group is stacked for healing.' },
+          { icon: 'note', text: 'Keep Selin away from the crystals when dragging him — if he\'s near a crystal when the drain phase starts he reaches it instantly.' },
+        ]
+      },
+      {
+        num: '02', name: 'Vexallus',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Pure Energy</strong> orbs periodically spawn. Soak them or they detonate for large group-wide damage. As tank, move Vexallus away from orb paths.' },
+          { icon: 'tank', text: 'Vexallus\'s <strong>Arcane Charge</strong> stacks on the tank. At 5 stacks, use a major defensive — the next hit will be extremely painful.' },
+          { icon: 'note', text: 'Tanking this boss against the far wall keeps the centre clear for orb soaking and DPS movement.' },
+        ]
+      },
+      {
+        num: '03', name: 'Priestess Delrissa',
+        tags: ['m-cc', 'm-interrupt', 'm-taunt'],
+        tips: [
+          { icon: 'warn', text: '<strong>Delrissa has 4 bodyguards</strong> — control is everything. Stun, CC, or otherwise separate them. Killing order: healer guard → dangerous caster → the rest.' },
+          { icon: 'tank', text: 'Use your highest-threat AoE on pull to keep all 5 enemies on you. If one breaks, <strong>taunt immediately</strong>.' },
+          { icon: 'note', text: '<strong>Interrupt Delrissa\'s heals</strong> first if her bodyguards are already dead — she will chain-cast heals at low health.' },
+          { icon: 'skill', text: 'This is the hardest pull in the dungeon. Ask your group to focus-fire one add at a time and use all CC available.' },
+        ]
+      },
+      {
+        num: '04', name: "Kael'thas Sunstrider",
+        tags: ['m-defensive', 'm-position', 'm-interrupt'],
+        tips: [
+          { icon: 'warn', text: '<strong>Gravity Lapse</strong> — Kael\'thas levitates the party. Interrupt the follow-up Phoenix bolt during this phase or someone will be one-shot.' },
+          { icon: 'tank', text: '<strong>Flame Strike</strong> — targets the tank. Move out of the fire immediately. Your position during this ability determines where the fire lands.' },
+          { icon: 'tank', text: 'Save your most powerful defensive for <strong>Phase 2 (Pyroblast)</strong> — Kael\'thas channels a massive fireball that ignores mitigation without a personal immune.' },
+          { icon: 'note', text: 'Keep Kael\'thas near the centre of the room so DPS can reach him regardless of Gravity Lapse positioning.' },
+        ]
+      },
+    ],
+    pullAdvice: '<strong>Group pull strategy</strong>: Pull Sunblade Mages into the corridor to LoS their Arcane Volley — this forces them to walk to you instead of freely casting. Assign one DPS to kick duty on mage packs so you can focus on positioning Fel Guards. Before Delrissa, designate a CC target and a kill order in chat. On Kael\'thas, keep a defensive available for every Gravity Lapse phase.',
+  },
+
+  {
+    id: 'murder-row',
+    name: 'Murder Row',
+    emoji: '🗡️',
+    zone: 'Silvermoon City',
+    type: 'leveling',
+    difficulty: 'easy',
+    diffLabel: 'Learner-Friendly',
+    bosses: 3,
+    unlockLevel: 83,
+    coords: '56.2, 61.1',
+    tankOverview: {
+      pull: 'Silvermoon City\'s dark underbelly. A relatively <strong>straightforward dungeon for learning tank fundamentals</strong>. Good for Normal and Heroic practice before M+.',
+      focus: 'Clean positioning and basic interrupt management. Great dungeon for practising aggro control on multi-mob pulls in a forgiving environment.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Fel Smugglers</strong> — interrupt their Fel Infusion cast or they buff nearby enemies with 30% damage for 20s.' },
+      { icon: 'note', text: '<strong>Demonic Imps</strong> — low health, but their Fel Bolt chain-casts rapidly. Use an AoE stop or kick one per pack.' },
+      { icon: 'tank', text: '<strong>Void-Tainted Guards</strong> — these apply a slow debuff on the tank. Movement ability removes it; otherwise you\'ll struggle to reposition.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Kystia Manaheart',
+        tags: ['m-interrupt', 'm-dispel', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Illicit Infusion</strong> — targets a party member (and her imp Nibbles). <em>Dispel this immediately</em> or it evolves into a lethal DoT.' },
+          { icon: 'note', text: '<strong>Fel Spray</strong> — a frontal cone. Face Kystia away from the group. Melee DPS should stand behind her.' },
+          { icon: 'tank', text: 'Nibbles the imp activates when Kystia drops to 50%. Taunt him immediately — he applies a fear on untanked players.' },
+        ]
+      },
+      {
+        num: '02', name: 'Zaen Bladesorrow',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Murder in a Row</strong> — Zaen charges to full energy then detonates. When you see him hit 100 energy, use a major defensive immediately.' },
+          { icon: 'tank', text: 'He gains a <strong>dodge buff</strong> at 50% HP. Don\'t panic — use utility/DoTs that bypass dodge and wait it out.' },
+          { icon: 'note', text: '<em>Take cover</em> — Zaen\'s knife throws target the area around the tank. Move slightly after each auto-attack to reduce predictability.' },
+        ]
+      },
+      {
+        num: '03', name: 'Xathuux the Annihilator',
+        tags: ['m-defensive', 'm-position', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Annihilation Slam</strong> — a ground target that erupts after 2 seconds. Drag Xathuux away from the impact zone immediately.' },
+          { icon: 'tank', text: '<strong>Void Rage</strong> buffs him at 30% HP — use your major defensive here. Damage output jumps significantly.' },
+          { icon: 'note', text: 'Keep Xathuux near the room\'s edge to avoid Annihilation zones covering the centre where DPS need to stand.' },
+        ]
+      },
+    ],
+    pullAdvice: 'Straightforward pulls throughout. Practice <strong>LoS pulling</strong> by starting packs around corners — this is a core skill to develop here. The corridor before Zaen has pairs of guards; pull one pair at a time. Xathuux\'s room has environmental hazards on the floor from earlier packs — clear them before the boss pull.',
+  },
+
+  {
+    id: 'den-of-nalorakk',
+    name: 'Den of Nalorakk',
+    emoji: '🐻',
+    zone: 'Zul\'Aman',
+    type: 'leveling',
+    difficulty: 'moderate',
+    diffLabel: 'Moderate',
+    bosses: 3,
+    unlockLevel: 88,
+    coords: '29.7, 84.9',
+    tankOverview: {
+      pull: 'The Amani bear loa\'s proving ground. A <strong>physical-damage heavy</strong> dungeon with significant bleed mechanics. Blood DK and Guardian Druid shine here.',
+      focus: 'Managing bleeds and physical mitigation. Troll trash has coordinated abilities — mark your kill order before larger pulls.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Amani Berserkers</strong> — they Enrage at 30% HP. Disrupt the enrage or use a major defensive during their Berserk window.' },
+      { icon: 'tank', text: '<strong>Spirit Wolves</strong> — these apply a Rend bleed stack on the tank. Rotate defensives every 3–4 stacks.' },
+      { icon: 'note', text: '<strong>Bear Guardians</strong> — immune to crowd control. Must be tanked. Keep them separated from casters so you can kick the casters.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Nalorakk\'s Chosen',
+        tags: ['m-cc', 'm-taunt', 'm-defensive'],
+        tips: [
+          { icon: 'note', text: '<strong>Three simultaneous adds</strong> — use AoE threat immediately. Mark the most dangerous (caster) for focus-fire.' },
+          { icon: 'tank', text: 'Bearform Guardian pulses AoE damage every 8s. Coordinate a <strong>group defensive</strong> (Rallying Cry, Darkness) with your group.' },
+          { icon: 'warn', text: 'The Shapeshifter switches between forms — each form has a different frontal. Reposition every time it shapeshifts.' },
+        ]
+      },
+      {
+        num: '02', name: 'High Priest Jhalan',
+        tags: ['m-interrupt', 'm-dispel'],
+        tips: [
+          { icon: 'warn', text: '<strong>Spirit Mend</strong> — Jhalan heals himself for a substantial amount. <em>Must be interrupted every cast.</em> This is your #1 priority.' },
+          { icon: 'note', text: '<strong>Shadow Bolt Volley</strong> — shadow DoT on the whole party. Ask your healer to dispel the heaviest stack.' },
+          { icon: 'tank', text: '<em>Loa\'s Blessing</em> — a self-buff at 50% HP. Purge it immediately if you have a purge ability, otherwise he deals 40% more damage.' },
+        ]
+      },
+      {
+        num: '03', name: 'Nalorakk',
+        tags: ['m-taunt', 'm-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Bear Charge</strong> — Nalorakk charges a random player. Position yourself between Nalorakk and the target to intercept. Use a defensive if you absorb it.' },
+          { icon: 'tank', text: '<strong>Mangle</strong> applies a stacking bleed. At 5 stacks, use a major defensive. The bleed damage is physical — armor and mitigation help.' },
+          { icon: 'note', text: 'Keep Nalorakk against the far wall. His charge path should have a clear line — no party members between him and his charge target.' },
+          { icon: 'good', text: 'Loa\'s Rage phase (30%): he gains 50% attack speed. Burn cooldowns here. Victory is close.' },
+        ]
+      },
+    ],
+    pullAdvice: 'Bleed-management run — play slightly more conservatively than Windrunner Spire. Mark the Amani Berserker with a skull; they\'re highest-priority targets to kill before Berserk. The path to Nalorakk has a large multi-pull room — <strong>pull packs from the doorway</strong> to avoid activating the whole room. Use Stampeding Roar or a movement CD after the final pack before Nalorakk.',
+  },
+
+  {
+    id: 'blinding-vale',
+    name: 'The Blinding Vale',
+    emoji: '🌿',
+    zone: 'Harandar',
+    type: 'leveling',
+    difficulty: 'moderate',
+    diffLabel: 'Moderate',
+    bosses: 3,
+    unlockLevel: 88,
+    coords: '26.4, 78.1',
+    tankOverview: {
+      pull: 'A bioluminescent nature dungeon overtaken by the invasive Lightbloom. Expect <strong>stacking debuffs and beam mechanics</strong>. Not in the M+ Season 1 rotation.',
+      focus: 'Positioning is key — beam mechanics require active repositioning throughout. Good dungeon for learning to tank while moving.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Lightbloom Spreaders</strong> — they channel a Lightbloom Pulse that grows in radius. Move the pack or interrupt before it fills the corridor.' },
+      { icon: 'tank', text: '<strong>Rutaani Hunters</strong> — they apply a slow that stacks. Use a movement ability after 3+ stacks or you\'ll be unable to reposition.' },
+      { icon: 'note', text: 'Environmental light beams deal damage if crossed. Route your pulls to avoid walking through active beams.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Lightblossom Trinity (Meittik, Lekshi, Kezkitt)',
+        tags: ['m-position', 'm-cc'],
+        tips: [
+          { icon: 'warn', text: '<strong>Lightbloom Beam</strong> — three interlocking beams rotate around the trio. <em>Block the beam</em> yourself to prevent party members from accumulating stacks.' },
+          { icon: 'tank', text: 'Three targets — use an AoE taunt on pull. These don\'t hit particularly hard individually but have overlapping abilities.' },
+          { icon: 'note', text: 'Kill order: Kezkitt (healer) → Meittik → Lekshi. Stop Kezkitt\'s Bloom Surge heals.' },
+        ]
+      },
+      {
+        num: '02', name: 'Ikuzz the Light Hunter',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Hunter\'s Pounce</strong> — Ikuzz leaps at a random player and targets their location with a beam. That player must move immediately.' },
+          { icon: 'tank', text: '<strong>Feeding Frenzy</strong> at 50% HP — Ikuzz attacks 50% faster. This is your major defensive window. Pop everything.' },
+          { icon: 'note', text: 'Position Ikuzz in a large open area. His leap trajectory can bring him close to the edge of safe zones.' },
+        ]
+      },
+      {
+        num: '03', name: 'Orweyna the Pruner',
+        tags: ['m-interrupt', 'm-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Surgical Strike</strong> — a targeted ability on the tank. Use a personal defensive immediately. On Normal this is manageable; on Heroic+ it is lethal without mitigation.' },
+          { icon: 'tank', text: '<strong>Lightbloom Graft</strong> — Orweyna channels to root you. Break with a movement ability, then immediately retaunt as she\'ll switch targets during the channel.' },
+          { icon: 'note', text: 'Keep Orweyna near the centre. Her Lightbloom zones grow toward the walls — you want open space to manoeuvre.' },
+          { icon: 'good', text: 'The environment weakens her at 40%: <em>Withered State</em> reduces her damage by 20%. Push through this threshold ASAP.' },
+        ]
+      },
+    ],
+    pullAdvice: 'Ideal dungeon for practising <strong>moving while tanking</strong>. Pull Spreaders first — their Lightbloom Pulse is the most dangerous trash ability. Use LoS at corridor corners to cluster Rutaani. The gauntlet section before Orweyna has beam traps; stop and observe the beam patterns before walking your group through.',
+  },
+
+  {
+    id: 'voidscar-arena',
+    name: 'Voidscar Arena',
+    emoji: '⚡',
+    zone: 'Voidstorm',
+    type: 'leveling',
+    difficulty: 'moderate',
+    diffLabel: 'Moderate',
+    bosses: 3,
+    unlockLevel: 90,
+    coords: 'Western Voidstorm',
+    tankOverview: {
+      pull: 'A gladiatorial Void-themed dungeon. Heavy <strong>magic-damage output</strong> from void-themed enemies. Magic mitigation and immunities are valuable here.',
+      focus: 'Managing burst windows and adds during arena-style encounters. Each boss fight has a distinct "arena event" feel with clear phases.',
+    },
+    trashTips: [
+      { icon: 'warn', text: '<strong>Void Gladiators</strong> — Interrupt their Void Shout which silences the entire party for 4s.' },
+      { icon: 'tank', text: '<strong>Arena Spectators</strong> — these throw Void Bolts at random players. Taunt them to yourself; they deal low melee damage but are distracting if left free.' },
+      { icon: 'note', text: '<strong>Shade Champions</strong> — apply a Void Corruption DoT that grows if not dispelled. Ask your healer to dispel it off the highest-stacked player each wave.' },
+    ],
+    bossTips: [
+      {
+        num: '01', name: 'Valdris the Unbroken',
+        tags: ['m-defensive', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Unbreakable Charge</strong> — Valdris charges across the arena. Sidestep the charge path and use a defensive when he turns around for his follow-up slam.' },
+          { icon: 'tank', text: '<strong>Champion\'s Roar</strong> buffs Valdris at 70% and 40%. Each one is a defensive-cooldown window.' },
+          { icon: 'note', text: 'Keep the centre of the arena clear. Void Zones appear at Valdris\'s feet — drag him along the perimeter.' },
+        ]
+      },
+      {
+        num: '02', name: 'The Chorus of Agony',
+        tags: ['m-cc', 'm-interrupt', 'm-taunt'],
+        tips: [
+          { icon: 'warn', text: '<strong>Four summoned voices</strong> — AoE taunt on pull. Assign each DPS a target and burn them fast; their combined damage quickly overwhelms the healer.' },
+          { icon: 'note', text: 'Each voice casts a different school. Interrupt the most dangerous cast (look for the largest health bar\'s cast).' },
+          { icon: 'skill', text: '<strong>Convergence</strong> — at 50% HP, all surviving voices merge into a more powerful version. Kill as many as possible before 50%.' },
+        ]
+      },
+      {
+        num: '03', name: 'Xal\'thar the Void-Crowned',
+        tags: ['m-defensive', 'm-interrupt', 'm-position'],
+        tips: [
+          { icon: 'warn', text: '<strong>Void Crown Pulse</strong> — a raid-wide burst every 30s. Coordinate group defensives to cover every pulse. There are usually 3–4 pulses per kill attempt.' },
+          { icon: 'tank', text: '<strong>Void Brand</strong> — a debuff on the tank that explodes after 8s for massive damage. Use your single strongest defensive when you receive it.' },
+          { icon: 'tank', text: '<strong>Interrupt Void Proclamation</strong> — if this completes, Xal\'thar calls in 3 elite adds that can wipe the group.' },
+          { icon: 'note', text: 'Final boss of the dungeon. Communicate pre-pull: "I\'m popping X on the first Brand, save Y for the second."' },
+        ]
+      },
+    ],
+    pullAdvice: 'Save AoE silences for Void Gladiator packs — their group silence is extremely disruptive and costs more time than any other trash ability in the dungeon. Before Xal\'thar, agree on a <strong>group defensive rotation</strong> for Void Crown Pulse: "I cover pulse 1 with Rallying Cry, healer covers pulse 2 with Barrier, etc."',
+  },
+];
+
+// Interrupt table data
+const INTERRUPTS = [
+  { dungeon: 'Windrunner Spire', enemy: 'Restless Steward (trash)', cast: 'Spirit Bolt', priority: 'must', reason: 'Heavy shadow damage, constant cast. Let one through and your healer will struggle.' },
+  { dungeon: 'Windrunner Spire', enemy: 'Bloated Lasher (trash)', cast: 'Fungal Bolt', priority: 'must', reason: 'Applies a stacking nature DoT — misses compound into healer panic very quickly.' },
+  { dungeon: 'Windrunner Spire', enemy: 'Derelict Duo — Kalis', cast: 'Banshee Wail', priority: 'must', reason: 'Party-wide fear. Scattered group = guaranteed wipe on higher keys.' },
+  { dungeon: 'Windrunner Spire', enemy: 'Commander Kroluk — Phantasmal Mystic', cast: 'Chain Lightning', priority: 'must', reason: 'Bounces between players. During add phase, this is the priority kill + kick.' },
+  { dungeon: 'Maisara Caverns', enemy: 'Vilebranch Casters (trash)', cast: 'Death Coil', priority: 'must', reason: 'Instant cast, deals massive damage to a random player. Multiple per pack.' },
+  { dungeon: 'Maisara Caverns', enemy: 'Vordaza', cast: 'Necrotic Bolt', priority: 'must', reason: 'Empowers Vordaza and deals AoE damage. Letting it cast delays the kill significantly.' },
+  { dungeon: 'Nexus-Point Xenas', enemy: 'Void Tendrils (trash)', cast: 'Tendrils of Despair', priority: 'must', reason: 'Ramps up to lethal AoE in ~4 seconds if unkicked.' },
+  { dungeon: 'Nexus-Point Xenas', enemy: 'Lattice Weaver', cast: 'Void Lattice', priority: 'must', reason: 'Creates impassable barriers splitting the group — effectively a soft wipe.' },
+  { dungeon: 'Nexus-Point Xenas', enemy: 'Xenas the Unmade', cast: 'Void Collapse channel', priority: 'must', reason: 'High-damage phase ability. Interrupt to shorten the damage window.' },
+  { dungeon: "Magisters' Terrace", enemy: 'Sunblade Mage (trash)', cast: 'Arcane Volley', priority: 'must', reason: 'Chains between players — 3 bounces can kill a DPS instantly at high keys.' },
+  { dungeon: "Magisters' Terrace", enemy: 'Selin Fireheart', cast: 'Fel Crystal Drain', priority: 'must', reason: 'Gives Selin a massive power buff if unkicked. Makes the rest of the fight significantly harder.' },
+  { dungeon: "Magisters' Terrace", enemy: 'Priestess Delrissa', cast: 'Holy Light (bodyguard)', priority: 'must', reason: 'Bodyguard healer will undo several seconds of DPS if not kicked every time.' },
+  { dungeon: "Magisters' Terrace", enemy: "Kael'thas Sunstrider", cast: 'Phoenix Bolt (Gravity Lapse)', priority: 'must', reason: 'One-shot potential during levitation phase. Your absolute highest priority on this boss.' },
+  { dungeon: 'Murder Row', enemy: 'Fel Smuggler (trash)', cast: 'Fel Infusion', priority: 'high', reason: 'Buffs nearby enemies with 30% damage for 20s — multiplies incoming damage significantly.' },
+  { dungeon: 'Murder Row', enemy: 'Kystia Manaheart', cast: 'Illicit Infusion', priority: 'high', reason: 'Dispel beats kick here, but kicking prevents the dispel-panic entirely.' },
+  { dungeon: 'Den of Nalorakk', enemy: 'High Priest Jhalan', cast: 'Spirit Mend', priority: 'must', reason: 'Heals the boss for a large percentage. Letting even one through costs ~30s of DPS.' },
+  { dungeon: 'Den of Nalorakk', enemy: 'Amani Berserker (trash)', cast: 'War Cry', priority: 'high', reason: 'Group-wide attack-speed buff to all enemies in range. Dangerous on large packs.' },
+  { dungeon: 'Voidscar Arena', enemy: 'Void Gladiator (trash)', cast: 'Void Shout', priority: 'must', reason: '4-second party silence — no healing, no kicks, no defensives. Guaranteed deaths at higher keys.' },
+  { dungeon: 'Voidscar Arena', enemy: "Xal'thar", cast: 'Void Proclamation', priority: 'must', reason: 'Summons 3 elite adds if not interrupted. Likely a wipe at any key level above +7.' },
+  { dungeon: 'The Blinding Vale', enemy: 'Lightbloom Spreader (trash)', cast: 'Lightbloom Pulse', priority: 'high', reason: 'Grows in radius — in a corridor it eventually fills wall-to-wall and is unavoidable.' },
+];
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let currentFilter = 'all';
+let openDungeons = new Set();
+let searchQuery = '';
+
+// ─────────────────────────────────────────────────────────────
+// RENDER DUNGEONS
+// ─────────────────────────────────────────────────────────────
+function renderDungeons() {
+  const container = document.getElementById('dungeon-list');
+  let filtered = DUNGEONS.filter(d => {
+    if (currentFilter !== 'all' && d.type !== currentFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const inName = d.name.toLowerCase().includes(q);
+      const inBoss = d.bossTips.some(b => b.name.toLowerCase().includes(q));
+      const inZone = d.zone.toLowerCase().includes(q);
+      if (!inName && !inBoss && !inZone) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:0.1em;text-transform:uppercase">No dungeons match your search</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(d => renderDungeonCard(d)).join('');
+}
+
+function renderDungeonCard(d) {
+  const isOpen = openDungeons.has(d.id);
+  return `
+  <div class="dungeon-card ${isOpen ? 'open' : ''}" id="card-${d.id}">
+    <div class="dungeon-header" onclick="toggleDungeon('${d.id}')">
+      <span class="dungeon-emoji">${d.emoji}</span>
+      <div class="dungeon-info">
+        <div class="dungeon-name">${d.name}</div>
+        <div class="dungeon-meta">
+          <span class="d-zone">${d.zone}</span>
+          ${d.type === 'rotation' ? `<span class="d-tag tag-rotation">M+ Rotation</span>` : `<span class="d-tag tag-leveling">Leveling</span>`}
+          <span class="d-tag ${diffClass(d.difficulty)}">${d.diffLabel}</span>
+          ${d.unlockLevel ? `<span class="d-zone">Unlocks Lv. ${d.unlockLevel}</span>` : ''}
+        </div>
+      </div>
+      <div class="dungeon-right">
+        <span class="boss-count">${d.bosses} bosses</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="dungeon-body">
+      <div class="dungeon-body-inner">
+        <div class="tank-overview">
+          <div class="overview-block">
+            <div class="ob-label">📍 Pull Strategy</div>
+            <div class="ob-content">${d.tankOverview.pull}</div>
+          </div>
+          <div class="overview-block" style="border-right:none">
+            <div class="ob-label">🎯 Tank Focus</div>
+            <div class="ob-content">${d.tankOverview.focus}</div>
+          </div>
+        </div>
+
+        ${d.trashTips && d.trashTips.length ? `
+        <div class="bosses-section">
+          <div class="bosses-title">Notable Trash</div>
+          <div class="boss-entry">
+            <div class="boss-tips">
+              ${d.trashTips.map(t => `
+                <div class="tip-row">
+                  <div class="tip-icon ${t.icon}">${tipIconChar(t.icon)}</div>
+                  <div class="tip-text">${t.text}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>` : ''}
+
+        <div class="bosses-section">
+          <div class="bosses-title">Boss Mechanics</div>
+          ${d.bossTips.map(b => `
+            <div class="boss-entry">
+              <div class="boss-header">
+                <span class="boss-num">${b.num}</span>
+                <span class="boss-name">${b.name}</span>
+                <div class="mechanic-tags">${b.tags.map(t => `<span class="m-tag ${t}">${tagLabel(t)}</span>`).join('')}</div>
+              </div>
+              <div class="boss-tips">
+                ${b.tips.map(tip => `
+                  <div class="tip-row">
+                    <div class="tip-icon ${tip.icon}">${tipIconChar(tip.icon)}</div>
+                    <div class="tip-text">${tip.text}</div>
+                  </div>`).join('')}
+              </div>
+            </div>`).join('')}
+        </div>
+
+        <div class="pull-section">
+          <div class="pull-title">⚔️ Tank Pull Notes</div>
+          <div class="pull-text">${d.pullAdvice}</div>
+        </div>
+
+      </div>
+    </div>
+  </div>`;
+}
+
+function diffClass(d) {
+  if (d === 'hard') return 'tag-hard';
+  if (d === 'moderate') return 'tag-moderate';
+  return 'tag-easy';
+}
+
+function tipIconChar(icon) {
+  const map = { warn:'!', note:'i', tank:'🛡', skill:'★', good:'✓' };
+  return map[icon] || 'i';
+}
+
+function tagLabel(t) {
+  const map = {
+    'minterrupt':'Interrupt','mdefensive':'Defensive','mposition':'Position',
+    'mtaunt':'Taunt','mcc':'CC','mdispel':'Dispel',
+    'm-interrupt':'Kick','m-defensive':'Defensive','m-position':'Positioning',
+    'm-taunt':'Taunt','m-cc':'CC','m-dispel':'Dispel'
+  };
+  return map[t] || t;
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER INTERRUPTS
+// ─────────────────────────────────────────────────────────────
+function renderInterrupts() {
+  const tbody = document.getElementById('interrupt-body');
+  tbody.innerHTML = INTERRUPTS.map(i => `
+    <tr>
+      <td style="color:var(--accent2);font-weight:500">${i.dungeon}</td>
+      <td>${i.enemy}</td>
+      <td style="font-weight:500;color:var(--white)">${i.cast}</td>
+      <td><span class="priority-badge p-${i.priority}">${i.priority.toUpperCase()}</span></td>
+      <td style="color:var(--muted)">${i.reason}</td>
+    </tr>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// INTERACTIONS
+// ─────────────────────────────────────────────────────────────
+function toggleDungeon(id) {
+  if (openDungeons.has(id)) { openDungeons.delete(id); }
+  else { openDungeons.add(id); }
+  renderDungeons();
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderDungeons();
+}
+
+function filterDungeon(name) {
+  showPage('dungeons');
+  if (name === 'all') {
+    currentFilter = 'all';
+    searchQuery = '';
+    document.getElementById('search-box').value = '';
+  } else {
+    searchQuery = name;
+    currentFilter = 'all';
+    document.getElementById('search-box').value = name;
+    openDungeons.add(DUNGEONS.find(d => d.name === name)?.id);
+  }
+  renderDungeons();
+}
+
+function searchDungeons(q) {
+  searchQuery = q;
+  renderDungeons();
+}
+
+function showPage(page) {
+  ['dungeons','fundamentals','interrupts'].forEach(p => {
+    document.getElementById('page-' + p).style.display = p === page ? '' : 'none';
+    document.getElementById('nav-' + p)?.classList.toggle('active', p === page);
+  });
+  // mobile nav
+  document.querySelectorAll('.mobile-nav-item').forEach((el, i) => {
+    const pages = ['dungeons','fundamentals','interrupts'];
+    el.classList.toggle('active', pages[i] === page);
+  });
+  if (page === 'interrupts') renderInterrupts();
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+renderDungeons();
+</script>
+</body>
+</html>
